@@ -1,0 +1,24 @@
+create or replace TABLE ECOMMERCE.ANALYTICS.FACT_CUSTOMER_SESSION cluster by (DATE_SK, TRAFFIC_SOURCE_SK)(
+	SESSION_SK NUMBER(38,0) NOT NULL autoincrement start 1 increment 1 noorder COMMENT 'Surrogate key',
+	DATE_SK NUMBER(38,0) NOT NULL COMMENT 'FK to DIM_DATE - session date',
+	CUSTOMER_SK NUMBER(38,0) NOT NULL COMMENT 'FK to DIM_CUSTOMER (0 for anonymous)',
+	GEOGRAPHY_SK NUMBER(38,0) NOT NULL DEFAULT 0 COMMENT 'FK to DIM_GEOGRAPHY - visitor location',
+	TRAFFIC_SOURCE_SK NUMBER(38,0) NOT NULL DEFAULT 0 COMMENT 'FK to DIM_TRAFFIC_SOURCE',
+	SESSION_ID VARCHAR(16777216) NOT NULL COMMENT 'Degenerate dim - unique session identifier',
+	PAGE_VIEWS NUMBER(5,0) NOT NULL COMMENT 'Pages viewed in session (additive)',
+	SESSION_DURATION_SEC NUMBER(8,0) NOT NULL COMMENT 'Session length in seconds (additive)',
+	PRODUCTS_VIEWED NUMBER(5,0) NOT NULL DEFAULT 0 COMMENT 'Distinct products viewed (additive)',
+	ADDED_TO_CART NUMBER(5,0) NOT NULL DEFAULT 0 COMMENT 'Items added to cart (additive)',
+	IS_BOUNCE BOOLEAN NOT NULL COMMENT 'True if only 1 page view',
+	IS_CONVERTED BOOLEAN NOT NULL COMMENT 'True if session resulted in a purchase',
+	ORDER_NUMBER VARCHAR(16777216) COMMENT 'Order placed in this session (NULL if no conversion)',
+	DEVICE_TYPE VARCHAR(16777216) COMMENT 'desktop, mobile, tablet',
+	ETL_LOADED_AT TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP() COMMENT 'Row load timestamp',
+	ETL_SOURCE VARCHAR(16777216) DEFAULT 'SEED' COMMENT 'Source system identifier',
+	constraint PK_FACT_SESSION primary key (SESSION_SK),
+	constraint FK_SESSION_DATE foreign key (DATE_SK) references ECOMMERCE.ANALYTICS.DIM_DATE(DATE_SK),
+	constraint FK_SESSION_CUSTOMER foreign key (CUSTOMER_SK) references ECOMMERCE.ANALYTICS.DIM_CUSTOMER(CUSTOMER_SK),
+	constraint FK_SESSION_GEO foreign key (GEOGRAPHY_SK) references ECOMMERCE.ANALYTICS.DIM_GEOGRAPHY(GEOGRAPHY_SK),
+	constraint FK_SESSION_SOURCE foreign key (TRAFFIC_SOURCE_SK) references ECOMMERCE.ANALYTICS.DIM_TRAFFIC_SOURCE(TRAFFIC_SOURCE_SK)
+)COMMENT='Customer web session fact | Grain: one row per session'
+;

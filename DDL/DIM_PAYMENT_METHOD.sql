@@ -1,0 +1,10 @@
+create or replace TABLE ECOMMERCE.ANALYTICS.DIM_PAYMENT_METHOD (
+	PAYMENT_METHOD_SK NUMBER(38,0) NOT NULL autoincrement start 0 increment 1 noorder COMMENT 'Surrogate key',
+	PAYMENT_TYPE VARCHAR(16777216) NOT NULL COMMENT 'Payment method name',
+	PAYMENT_PROVIDER VARCHAR(16777216) COMMENT 'Payment provider or network',
+	ETL_LOADED_AT TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP() COMMENT 'Row load timestamp',
+	ETL_SOURCE VARCHAR(16777216) DEFAULT 'SEED' COMMENT 'Source system identifier',
+	PAYMENT_METHOD_ID VARCHAR(16777216) NOT NULL DEFAULT 'UNKNOWN' COMMENT 'Natural key from source system',
+	constraint PK_DIM_PAYMENT_METHOD primary key (PAYMENT_METHOD_SK)
+)COMMENT='Payment method dimension (SCD Type 1)'
+;

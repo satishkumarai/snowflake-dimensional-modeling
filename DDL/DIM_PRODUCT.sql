@@ -1,0 +1,13 @@
+create or replace TABLE ECOMMERCE.ANALYTICS.DIM_PRODUCT (
+	PRODUCT_SK NUMBER(38,0) NOT NULL autoincrement start 0 increment 1 noorder COMMENT 'Surrogate key',
+	PRODUCT_ID VARCHAR(16777216) NOT NULL COMMENT 'Natural key from source system',
+	PRODUCT_NAME VARCHAR(16777216) COMMENT 'Product name',
+	CATEGORY VARCHAR(16777216) COMMENT 'Top-level category',
+	SUBCATEGORY VARCHAR(16777216) COMMENT 'Sub-category',
+	BRAND VARCHAR(16777216) COMMENT 'Brand name',
+	UNIT_PRICE NUMBER(10,2) COMMENT 'Current list price',
+	ETL_LOADED_AT TIMESTAMP_NTZ(9) NOT NULL DEFAULT CURRENT_TIMESTAMP() COMMENT 'Row load timestamp',
+	ETL_SOURCE VARCHAR(16777216) DEFAULT 'SEED' COMMENT 'Source system identifier',
+	constraint PK_DIM_PRODUCT primary key (PRODUCT_SK)
+)COMMENT='Product dimension (SCD Type 1)'
+;
